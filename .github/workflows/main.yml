@@ -1,0 +1,21 @@
+name: Deploy Node.js app to Azure Web App using release atrifact - fair-api-test
+
+on:
+  release:
+    types: [published]
+jobs:
+  release-production:
+    name: Release to Production
+    if: startsWith(github.ref_name, 'release-')
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Get Artifact from Release
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          version: ${{ github.event.release.id }}
+          file: app-artifacts.zip
+      - name: Unzip Artifact
+        run: unzip app-artifacts.zip
